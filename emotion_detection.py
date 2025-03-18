@@ -24,9 +24,37 @@ def emotion_detector(text_to_analyze):
         
         # Check if the response status code is 200 (OK)
         if response.status_code == 200:
-            # Get the JSON response and extract the emotion-related data
+            # Convert the response text into a dictionary (JSON)
             response_json = response.json()
-            return response_json  # You can return the whole response or any specific part of it
+            
+            # Extract the emotion scores from the response
+            emotions = response_json.get('emotion', {})
+
+            # Extract the scores for each emotion
+            anger_score = emotions.get('anger', 0)
+            disgust_score = emotions.get('disgust', 0)
+            fear_score = emotions.get('fear', 0)
+            joy_score = emotions.get('joy', 0)
+            sadness_score = emotions.get('sadness', 0)
+
+            # Create a dictionary to store emotions and their scores
+            emotion_scores = {
+                'anger': anger_score,
+                'disgust': disgust_score,
+                'fear': fear_score,
+                'joy': joy_score,
+                'sadness': sadness_score
+            }
+
+            # Find the dominant emotion by finding the emotion with the highest score
+            dominant_emotion = max(emotion_scores, key=emotion_scores.get)
+
+            # Add the dominant emotion to the dictionary
+            emotion_scores['dominant_emotion'] = dominant_emotion
+
+            # Return the emotion scores along with the dominant emotion
+            return emotion_scores
+        
         else:
             # Return error message if the response status code is not 200
             return f"Error: {response.status_code}, {response.text}"
@@ -44,5 +72,5 @@ if __name__ == "__main__":
     # Call the emotion detector function
     result = emotion_detector(text_to_analyze)
     
-    # Print the result (the emotions detected)
+    # Print the result (the emotions detected along with dominant emotion)
     print(json.dumps(result, indent=4))
