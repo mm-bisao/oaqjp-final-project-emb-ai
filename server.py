@@ -17,6 +17,10 @@ def emotionDetector():
         # Call the emotion_detector function from the EmotionDetection package
         result = emotion_detector(text_to_analyze)
 
+        # If the dominant emotion is None, return an error message
+        if result['dominant_emotion'] is None:
+            return render_template('index.html', response="Invalid text! Please try again.")
+
         # Format the result as required in the task
         emotion_data = {
             'anger': result['anger'],
@@ -27,7 +31,6 @@ def emotionDetector():
             'dominant_emotion': result['dominant_emotion']
         }
 
-        # Display the formatted result
         response = f"For the given statement, the system response is 'anger': {emotion_data['anger']}, " \
                    f"'disgust': {emotion_data['disgust']}, 'fear': {emotion_data['fear']}, " \
                    f"'joy': {emotion_data['joy']} and 'sadness': {emotion_data['sadness']}. " \
